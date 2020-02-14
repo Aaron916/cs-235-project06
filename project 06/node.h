@@ -26,15 +26,15 @@ public:
 };
 
 template <class T>
-Node <T>* copy(const Node<T>* pSource)
+Node <T>* copy(Node<T>* pSource) // removed the const before the argument to test a fix for an error.
 {
-	Node<T> *pDestination = new Node(pSource->data);
-	Node<T> *pSrc = pSource;
+	Node<T> *pDestination = new Node<T>(pSource->data);
+    Node<T> *pSrc = pSource;
 	Node<T> *pDes = pDestination;
 
 	while (pSrc->pNext)
 	{
-		pDes = insert(pSrc->data, pDes, true);
+		pDes = insert(pDes, pSrc->data, true);
 	}
 	return pDestination;
 }
@@ -72,7 +72,7 @@ Node <T>* insert(Node<T> *pCurrent, const T &t, bool after = false)
 template <class T>
 Node <T>* find(Node<T>* pHead, const T& t)
 {
-	while (pHead->next)
+	while (pHead->pNext)
 	{
 		pHead->data = t;
 		return pHead;
@@ -94,10 +94,10 @@ void freeData(Node<T>* & pHead)
 template <class T>
 Node <T>* remove(const Node<T>* pRemove)
 {
-	if (NULL == pRemove)
-		return;
-
-	Node<T>* pReturn;
+    if (NULL == pRemove)
+		return NULL; // added NULL because we needed to return some value. //
+    
+	Node<T>* pReturn = NULL; // Initialized to NULL so that there was no case in which it could return an unititialized value //
 
 	if (pRemove->pPrev)
 	{
