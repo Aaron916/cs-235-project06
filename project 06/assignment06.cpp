@@ -441,7 +441,7 @@ void testRemove()
       {
          cout << "\tRemoving " << p->data << endl;
       }
-      while (p == remove(p));
+      while (p = remove(p));
       cout << "The list is empty\n";
          
 

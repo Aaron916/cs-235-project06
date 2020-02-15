@@ -23,7 +23,7 @@ Node <T>* copy(Node<T>* pSource) // removed the const before the argument to tes
 	Node<T>* pSrc = pSource;
 	Node<T>* pDes = pDestination;
 
-	for (Node<T>* p = pSource; p != NULL; p = p->pNext) // Had to change the loop. It wasn't copying correctly. It was throwing bad_alloc exceptions. -AG
+	for (pSrc = pSrc->pNext; pSrc != NULL; pSrc = pSrc->pNext) // Had to change the loop. It wasn't copying correctly. It was throwing bad_alloc exceptions. -AG
 	{
 		pDes = insert(pDes, pSrc->data, true);
 	}
@@ -31,7 +31,7 @@ Node <T>* copy(Node<T>* pSource) // removed the const before the argument to tes
 }
 
 template <class T>
-Node <T>* insert(Node<T>*& pCurrent, const T& t, bool after = false)
+Node <T>* insert(Node<T>* pCurrent, const T& t, bool after = false)
 {
 	Node<T>* pNew = new Node<T>(t);
 
@@ -48,9 +48,10 @@ Node <T>* insert(Node<T>*& pCurrent, const T& t, bool after = false)
 
 	if (pCurrent && after == true)
 	{
-		pNew->pPrev = pCurrent;
+		//THIS ORDER MATTERS. If out of order, it doesn't get inserted correctly.
 		pNew->pNext = pCurrent->pNext;
 		pCurrent->pNext = pNew;
+		pNew->pPrev = pCurrent;
 		if (pNew->pNext)
 		{
 			pNew->pNext->pPrev = pNew;
@@ -88,19 +89,27 @@ void freeData(Node<T>*& pHead)
 template <class T>
 Node <T>* remove(const Node<T>* pRemove)
 {
-	if (NULL == pRemove)
-		return NULL; // added NULL because we needed to return some value. //
+	Node<T>* pReturn;
 
-	Node<T>* pReturn = NULL; // Initialized to NULL so that there was no case in which it could return an unititialized value //
+	if (NULL == pRemove)
+	{
+		std::cout << "Empty";
+	}
 
 	if (pRemove->pPrev)
 	{
 		pRemove->pPrev->pNext = pRemove->pNext;
-		pReturn = pRemove->pPrev;
 	}
 	if (pRemove->pNext)
 	{
 		pRemove->pNext->pPrev = pRemove->pPrev;
+	}
+	if (pRemove->pPrev)
+	{
+		pReturn = pRemove->pPrev;
+	}
+	else
+	{
 		pReturn = pRemove->pNext;
 	}
 
